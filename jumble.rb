@@ -13,11 +13,20 @@ class Jumble
   end
 
   def loadDictionary
-    File.open("lib/scowl-7.1/final/english-words.10", "r") do |f|
-      f.each_line do |line|
-        @dictionary.add line.chomp # chomp to remove newlines
+    word_lists = [
+      "american-words.10",
+      "american-words.20",
+      "english-words.10",
+      "english-words.20"
+    ]
+    word_lists.each do | word_list |
+      File.open("lib/scowl-7.1/final/#{word_list}", "r") do |f|
+        f.each_line do |line|
+          @dictionary.add line.chomp # chomp to remove newlines
+        end
       end
     end
+    puts "Dictionary has #{@dictionary.size} words."
   end
 
   def gameLoop
@@ -73,17 +82,17 @@ class Jumble
 
   def permute(str="")
     new_perms = Set.new
-    # puts "permuting: " + str
+
     n = str.length
     if n == 1
       return new_perms.add(str)
     end
     # For each character str[j] in str
     0.upto(n-1) do |j|
-      # Get all permutations of strings NOT containing current character str[j]
+      # Get all permutations of the string NOT containing current character str[j]
       s = str[0...j] + str[j+1...n]
       perms = permute(s)
-      # For each of those permutations NOT containg str[j]
+      # For each of those permutations
       perms.each do | perm |
         # Build new permutations using current character str[j]
         0.upto(perm.length) do |k|
