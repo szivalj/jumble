@@ -7,6 +7,7 @@ class Jumble
     @dictionary = Set.new
     @subsets = Set.new
     @candidates = Set.new
+    @permutations = Hash.new
 
     loadDictionary
     gameLoop
@@ -26,31 +27,31 @@ class Jumble
         end
       end
     end
-    puts "Dictionary has #{@dictionary.size} words."
+    puts "Dictionary contains #{@dictionary.size} words."
   end
 
   def gameLoop
     print "Enter jumbled letters: "
-    @jumble = gets
+    user_input = gets
     # Strip non word characters and digits
-    @jumble.gsub!(/\W*\d*/, "")
+    user_input.gsub!(/\W*\d*/, "")
 
     @subsets.clear
     @candidates.clear
-    createSubsets
+    createSubsets(user_input)
     permuteSubsets
     checkDictionary
   end
 
-  def createSubsets
+  def createSubsets(str="")
     # There are 2^n subsets of str where n is str.length
-    n = @jumble.length
+    n = str.length
     # We are counting in binary and including zero as the first
     #   subset, so subtract 1. We can also omit the subset which
-    #   equals the initial set (e.g. `111`, subset #7 when the input
+    #   equals the whole set (e.g. `111`, subset #7 when the input
     #   is of length 3), so subtract another 1.
     num_subsets = 2**n - 2
-    @subsets.add(@jumble) # sice we skipped the subset that equals initial set
+    @subsets.add(str) # sice we skip the subset that equals whole set
     # subset_int is an integer whose binary representation maps to
     #   inclusion/exclusion of those characters from the set
     #   e.g. subset #5 is `101`, it includes "a" and "c"
@@ -61,7 +62,7 @@ class Jumble
       subset = ""
       for j in 0...n # loop through each each bit
         unless subset_int[j].zero? # if the bit is 1
-          subset.prepend @jumble[j] # include that character in this subset
+          subset.prepend str[j] # include that character in this subset
         end
       end
 
@@ -80,13 +81,20 @@ class Jumble
     end
   end
 
+  # Takes a string, returns a Set of permutations.
   def permute(str="")
-    new_perms = Set.new
-
+    # If we already computed permutations for this string
+    if @permutations.has_key?(str)
+      return @permutations[str]
+    end
+    # Permutation when str.length 1
     n = str.length
     if n == 1
-      return new_perms.add(str)
+      @permutations[str] = Set.new [str]
+      return @permutations[str]
     end
+
+    new_perms = Set.new
     # For each character str[j] in str
     0.upto(n-1) do |j|
       # Get all permutations of the string NOT containing current character str[j]
@@ -101,7 +109,8 @@ class Jumble
         end
       end
     end
-    new_perms
+    @permutations[str] = new_perms
+    @permutations[str]
   end
 
   def checkDictionary
