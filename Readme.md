@@ -2,6 +2,14 @@
 
 To run, execute `ruby jumble.rb` from the root directory.
 
+To run the tests do `rspec spec`.
+
+If rspec is not installed, you can use bundler:
+
+1) `gem install bundler`
+2) `bundle install`
+3) `rspec spec`
+
 ## Problem
 
 Can you create a program to solve a word jumble?  (
