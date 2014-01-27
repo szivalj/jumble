@@ -39,6 +39,10 @@ There are n! possible permutations, including repeats such as "aa" and "aa", for
 
 ## Optimizations
 
-Our method for generating permutations requires us to generate permutations for a whole pyramid of substrings building up to the final set of permutations. When generating these permutations for all subsets of the input string, there will be a lot of duplicate permutatons being calculated. Or even just in the case of the user sumbitting multiple word jumbles, we don't want to redo any work that we don't have to. We can save these 'intermediate permutations' so they don't have to be calculated every time. That's what the @permutaions instance variable is for, it is a Hash of Sets.
+Our method for generating permutations requires us to generate permutations for a whole pyramid of substrings building up to the final set of permutations. When generating these permutations for all subsets of the input string, there will be a lot of duplicate permutatons being calculated. Or even just in the case of the user sumbitting multiple word jumbles, we don't want to redo any work that we don't have to. We can save these 'intermediate permutations' so they don't have to be calculated every time. That's what the @@permutaions class variable is for, it is a Hash of Sets, and it is shared among all instances of the Jumble game.
 
 We could also use a more efficient algorithm to generate the permutations in the first place. For instance the Steinhaus–Johnson–Trotter algorithm generates permutations by swapping two adjacent elements of the input string, so it generates permutations of length n directly.
+
+## Limitations
+
+Can only generate subsets for strings of length 32 or less. This is because we are using the binary representation of an integer as a map of subsets, and there are only 32 bits.
